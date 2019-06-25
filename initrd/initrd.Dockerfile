@@ -1,7 +1,10 @@
 
+COPY initrd/0001-libblkid.patch /tmp
+
 RUN mkdir -p /tmp/build \
     && curl -sL https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.34/util-linux-2.34.tar.gz | tar xz -C /tmp/build \
     && cd /tmp/build/util-linux-2.34 \
+    && patch -p 1 < /tmp/0001-libblkid.patch \
     && ./autogen.sh  \
 	&& ./configure --host aarch64-linux-gnu --prefix /sdk \
 	&& make  \
@@ -72,13 +75,15 @@ RUN mkdir -p /tmp/build \
     && make install \
     && rm -rf /tmp/build
  
+
 RUN mkdir -p /tmp/build \
     && cd /tmp/build \
+    && echo 2 \
     && mkdir -p /sdk/initrd/ \
     && git clone https://github.com/jonpe960/kickstart /tmp/build/kickstart \
     && export CROSS_COMPILE=aarch64-linux-gnu- \
-    && make -C /tmp/build/kickstart/src \
-    && cp /tmp/build/kickstart/src/build/kickstart /sdk/initrd/init \
+    && make -C /tmp/build/kickstart/src/initrd \
+    && cp /tmp/build/kickstart/src/build/kickstart-initrd /sdk/initrd/init \
     && rm -rf /tmp/build
 
 COPY initrd/create_initrd /

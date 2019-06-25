@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Using KS_ROOT_HASH=$KS_ROOT_HASH"
 
 mkdir -p /tmp/initrd/proc \
     && mkdir -p /tmp/initrd/sys \
@@ -6,6 +7,6 @@ mkdir -p /tmp/initrd/proc \
     && mkdir -p /tmp/initrd/tmp \
     && mkdir -p /tmp/initrd/newroot \
     && cp /sdk/initrd/init /tmp/initrd \
-    && echo $KS_ROOT_HASH > /tmp/initrd/roothash \
+    && echo -n $KS_ROOT_HASH > /tmp/initrd/roothash \
     && cd /tmp/initrd \
     && find . | cpio -H newc -o > /output/initrd.cpio
